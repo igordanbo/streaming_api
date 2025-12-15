@@ -10,7 +10,10 @@ class SerieController extends Controller
 {
     public function index()
     {
-        return response()->json([Serie::with('seasons'), 'message' => 'Sucesso'], 200);
+        return response()->json([
+            'data' => Serie::with('seasons.episodes')->get(),
+            'message' => 'Sucesso'
+        ], 200);
     }
 
     public function show($id)
@@ -21,7 +24,10 @@ class SerieController extends Controller
             return response()->json(["message" => "Nenhuma série encontrada"], 404);
         }
 
-        return response()->json([$serie], 200);
+        return response()->json([
+            'data' => Serie::with('seasons.episodes')->find($id),
+            'message' => 'Sucesso'
+        ], 200);
     }
 
     public function store(SerieRequest $request)
@@ -34,7 +40,10 @@ class SerieController extends Controller
 
     public function update(SerieRequest $request, $id)
     {
-        $serie = Serie::find($id);
+        //Resumido
+        //Series::where(‘id’, $series)->update($request->all());
+
+        $serie = Serie::with('seasons.episodes')->find($id);
 
         if (!$serie) {
             return response()->json(["message" => "Nenhuma série encontrada"], 404);

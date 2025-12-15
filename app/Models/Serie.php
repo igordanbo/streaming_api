@@ -23,4 +23,10 @@ class Serie extends Model
     {
         return $this->hasMany(Season::class, 'serie_id');
     }
+
+    //busca todos os epidodeos da series através (through) de Season
+    public function episodes()
+    {
+        return $this->hasManyThrough(Episode::class, Season::class);
+    }
 }
