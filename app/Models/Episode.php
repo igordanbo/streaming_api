@@ -19,4 +19,19 @@ class Episode extends Model
     {
         return $this->belongsTo(Season::class, 'season_id');
     }
+
+    public function viewers () {
+        return $this->belongsToMany([
+            User::class,
+            'episode_user',
+            'episode_id',
+            'user_id',
+            'id',
+            'id'
+        ])->withPivot([
+            'watched',
+            'progress',
+            'watched_at'
+        ]);
+    }
 }

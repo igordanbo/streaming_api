@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SerieRequest;
 use App\Models\Serie;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 
 class SerieController extends Controller
@@ -32,16 +33,35 @@ class SerieController extends Controller
 
     public function store(SerieRequest $request)
     {
+        $user = $request->user();
+
+        if (! $user->tokenCan('is_admin')) {
+            return response()->json([
+                'message' => 'Acesso não autorizado'
+            ], 403);
+        }
+
+        $serie = Serie::create($request->validated());
+
         return response()->json([
-            'mesage' => 'Série criada com sucesso',
-            'data' => Serie::create($request->all())
+            'message' => 'Série criada com sucesso',
+            'data' => $serie
         ], 201);
     }
+
 
     public function update(SerieRequest $request, $id)
     {
         //Resumido
         //Series::where(‘id’, $series)->update($request->all());
+
+        $user = $request->user();
+
+        if (! $user->tokenCan('is_admin')) {
+            return response()->json([
+                'message' => 'Acesso não autorizado'
+            ], 403);
+        }
 
         $serie = Serie::with('seasons.episodes')->find($id);
 

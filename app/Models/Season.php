@@ -29,4 +29,20 @@ class Season extends Model
     {
         return $this->hasMany(Episode::class, 'season_id');
     }
+
+    public function viewers()
+    {
+        return $this->belongsToMany([
+            User::class,
+            'season_user',
+            'season_id',
+            'user_id',
+            'id',
+            'id'
+        ])->withPivot([
+            'watched',
+            'progress',
+            'watched_at'
+        ])->withTimestamps();
+    }
 }

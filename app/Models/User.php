@@ -54,4 +54,36 @@ class User extends Authenticatable
     {
         return $this->hasMany(Serie::class, 'author');
     }
+
+    public function watchedEpisodes()
+    {
+        return $this->belongesToMany([
+            Episode::class,
+            'episode_user',     // tabela pivot
+            'user_id',          // FK do User na pivot
+            'episode_id',       // FK do Episode na pivot
+            'id',               // PK do User
+            'id'                // PK do Episode
+        ])
+            ->withPivot([ //colunas da tabela pivot que quero acesso
+                'watched',
+                'progress',
+                'watched_at'
+            ])->withTimestamps(); //preenche time automaticamente
+    }
+
+    public function watchedSeasons() {
+        return $this->belongsToMany([
+            Season::class,
+            'season_user',
+            'user_id',
+            'season_id',
+            'id',
+            'id'
+        ])->withPivot([
+            'watched',
+            'progess',
+            'watched_at'
+        ])->withTimestamps();
+    }
 }
